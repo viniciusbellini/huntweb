@@ -1,28 +1,36 @@
-import React, {useState, useEffect } from 'react';
+import React, {Component} from 'react';
 
 import api from '../../services/api';
+import './styles.css';
 
-function Main() {
+export default class Main extends Component {
+    state = {
+        products: []
+    }
 
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-         aloadProducts();
-    });
-
-    const aloadProducts = async () => {        
+    componentDidMount() {
+        this.loadProducts();
+    }
+    
+    loadProducts = async () => {        
         const response = await api.get('/products');
-        setProducts(response.data.docs);
+        this.setState({products: response.data.docs});
     };
 
-    return (
-        <div className="product-list">
-            {products.map(product => (
-                <h2 key={product._id}>{product.title}</h2>
-            ))}
-        </div>
-    )
+    render() {
+        const { products } = this.state;
 
+        return (
+            <div className="product-list">
+                {this.state.products.map(product => (
+                    <article key={product._id}>
+                        <strong>{product.title}</strong>
+                        <p>{product.description}</p>
+
+                        <a href="">Acessar</a>
+                    </article>
+                ))}
+            </div>
+        );
+    }
 }
-
-export default Main;
